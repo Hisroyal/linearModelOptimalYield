@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Optimal Age Calculator (L*)</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 20px;">
+  <h1>Optimal Age Calculator (L*)</h1>
+
+  <label>Enter a: <input type="number" id="a" /></label><br/><br/>
+  <label>Enter b: <input type="number" id="b" /></label><br/><br/>
+  <label>Enter c: <input type="number" id="c" /></label><br/><br/>
+  <label>Enter d: <input type="number" id="d" /></label><br/><br/>
+
+  <button onclick="calculateOptimalAge()">Calculate Optimal Age</button>
+
+  <h2>Result:</h2>
+  <div id="output" style="font-size: 1.2em; margin-top: 10px;"></div>
+
+  <script>
+    function calculateOptimalAge() {
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const c = parseFloat(document.getElementById('c').value);
+      const d = parseFloat(document.getElementById('d').value);
+
+      if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+        document.getElementById('output').innerHTML = "Please enter valid numbers for all parameters.";
+        return;
+      }
+
+      const term1 = c - 2*a + b;
+      const term2 = 2*d - c - b + a;
+      const u = term1 * term2;
+
+      if (u < 0) {
+        document.getElementById('output').innerHTML = "Invalid parameter combination: negative value under square root.";
+        return;
+      }
+
+      const sqrt_u = Math.sqrt(u);
+      const L_star = 0.5 * (c + sqrt_u);
+
+      // Check domination condition
+      const du_da = -4*d + 3*c + 3*b - 4*a;
+      const dominationCondition = Math.abs(du_da) > 2 * sqrt_u;
+
+      let dominationMessage = "";
+      if (dominationCondition) {
+        dominationMessage = "Parameter <b>a</b> dominates sensitivity.";
+      } else {
+        dominationMessage = "Parameter <b>c</b> dominates sensitivity.";
+      }
+
+      document.getElementById('output').innerHTML =
+        `<p>Optimal Age (L*): <b>${L_star.toFixed(3)}</b></p>` +
+        `<p>${dominationMessage}</p>`;
+    }
+  </script>
+</body>
+</html>
